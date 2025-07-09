@@ -31,16 +31,23 @@ export default function TodayScreen() {
       setLoading(true);
       setError(null);
       
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRv2lIEVfxZEwAePL2selhzplDSII7bH7H0UkzZGNZTRbn_i76eos4rcmsgTNOKms6kgIz0un-EONHs/pub?output=csv', {
         method: 'GET',
         headers: {
-          'Accept': 'text/csv,text/plain,*/*'
+          'Accept': 'text/csv,text/plain,*/*',
+          'Cache-Control': 'no-cache'
         },
-        cache: 'no-cache',
+        signal: controller.signal,
       });
       
+      clearTimeout(timeoutId);
+      
       if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const text = await response.text();
@@ -60,12 +67,24 @@ export default function TodayScreen() {
       const today = getTodayDate();
       const todaysDevotional = findTodaysDevotional(parsedData, today);
       
-      setCurrentDevotional(todaysDevotional || null);
+      setCurrentDevotional(todaysDevotional || parsedData[0]); // Use first entry if today's not found
+      setRetryCount(0); // Reset retry count on success
+      
     } catch (err) {
       console.error('Error fetching devotionals:', err);
       
-      // If we've tried multiple times and still failed, use sample data
-      if (retryCount >= 2) {
+      let errorMessage = 'Failed to load devotional.';
+      
+      if (err.name === 'AbortError') {
+        errorMessage = 'Request timed out. Check your internet connection.';
+      } else if (err.message.includes('Failed to fetch')) {
+        errorMessage = 'Network error. Please check your internet connection.';
+      } else if (err.message.includes('HTTP')) {
+        errorMessage = 'Server error. The devotional service may be temporarily unavailable.';
+      }
+      
+      // Use sample data as fallback after first failure or if retry count is high
+      if (retryCount >= 1 || devotionals.length === 0) {
         console.log('Using sample devotionals as fallback');
         setDevotionals(sampleDevotionals);
         
@@ -73,9 +92,9 @@ export default function TodayScreen() {
         const todaysDevotional = findTodaysDevotional(sampleDevotionals, today);
         
         setCurrentDevotional(todaysDevotional || sampleDevotionals[0]);
-        setError('Unable to fetch online devotionals. Using sample content instead.');
+        setError('Using offline content. Pull down to retry loading online devotionals.');
       } else {
-        setError('Failed to load devotional. Pull down to retry.');
+        setError(`${errorMessage} Pull down to retry.`);
         setRetryCount(prev => prev + 1);
       }
     } finally {
@@ -85,7 +104,10 @@ export default function TodayScreen() {
   };
 
   useEffect(() => {
-    fetchDevotionals();
+    // Only fetch if we don't have devotionals or current devotional
+    if (devotionals.length === 0 || !currentDevotional) {
+      fetchDevotionals();
+    }
   }, []);
 
   const onRefresh = () => {
@@ -94,7 +116,7 @@ export default function TodayScreen() {
     fetchDevotionals();
   };
 
-  if (isLoading && !refreshing) {
+  if (isLoading && !refreshing && !currentDevotional) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.light.primary} />
@@ -127,9 +149,7 @@ export default function TodayScreen() {
           </>
         ) : (
           <EmptyState 
-            message={
-              "No devotional available for today. Pull down to refresh or check back tomorrow."
-            } 
+            message="No devotional available. Pull down to refresh or check your internet connection." 
           />
         )}
       </ScrollView>
