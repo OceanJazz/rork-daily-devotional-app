@@ -52,7 +52,7 @@ Instead of letting EAS create the app automatically, create it manually:
    - Name: "Cultivate" (or your preferred name)
    - Primary Language: English
    - Bundle ID: Must match your app.json exactly
-   - SKU: "cultivate-devotional-2025" (unique identifier)
+   - SKU: "cultivate-2025" (unique identifier)
 
 4. **Save the app**
 

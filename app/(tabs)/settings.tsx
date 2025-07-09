@@ -97,10 +97,10 @@ export default function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About</Text>
         <Text style={styles.aboutText}>
-          Daily Devotional App v1.1.0
+          Cultivate v1.1.0
         </Text>
         <Text style={styles.aboutDescription}>
-          This app provides daily scripture readings and reflection prompts to help you grow in your faith journey.
+          Cultivate provides daily scripture readings and reflection prompts to help you grow in your faith journey.
         </Text>
       </View>
     </SafeAreaView>

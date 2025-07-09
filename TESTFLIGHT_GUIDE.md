@@ -1,4 +1,4 @@
-# Getting Your App to Apple TestFlight
+# Getting Cultivate to Apple TestFlight
 
 ## Prerequisites
 
@@ -17,15 +17,15 @@
    ```json
    {
      "expo": {
-       "name": "Daily Devotional",
-       "slug": "daily-devotional",
+       "name": "Cultivate",
+       "slug": "cultivate-devotional",
        "version": "1.0.0",
        "ios": {
-         "bundleIdentifier": "com.yourname.dailydevotional",
+         "bundleIdentifier": "com.yourname.cultivate",
          "buildNumber": "1"
        },
        "android": {
-         "package": "com.yourname.dailydevotional",
+         "package": "com.yourname.cultivate",
          "versionCode": 1
        }
      }
@@ -61,13 +61,13 @@
 2. **Create a new app:**
    - Click "My Apps" → "+" → "New App"
    - Choose iOS
-   - Enter app name: "Daily Devotional"
+   - Enter app name: "Cultivate"
    - Bundle ID: Must match your app.json
-   - SKU: Unique identifier (e.g., "daily-devotional-2025")
+   - SKU: Unique identifier (e.g., "cultivate-2025")
 
 3. **Fill in app information:**
-   - App description
-   - Keywords
+   - App description: "Daily devotional app for spiritual growth and reflection"
+   - Keywords: devotional, bible, faith, prayer, spiritual
    - Categories: Lifestyle, Reference
    - Age rating
 
@@ -163,4 +163,4 @@ eas build:list
 4. When ready, submit for App Store review
 5. App Store review takes 1-7 days
 
-Your Daily Devotional app is well-structured and should pass TestFlight review easily!
+Your Cultivate app is well-structured and should pass TestFlight review easily!

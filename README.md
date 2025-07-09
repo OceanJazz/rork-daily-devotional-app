@@ -1,4 +1,4 @@
-# Daily Devotional App
+# Cultivate - Daily Devotional App
 
 ## Adding Your Custom Splash Screen
 
