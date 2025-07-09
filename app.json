@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "Cultivate-devotional"
+      "bundleIdentifier": "com.jasonbrown.cultivate"
     },
     "android": {
       "adaptiveIcon": {
