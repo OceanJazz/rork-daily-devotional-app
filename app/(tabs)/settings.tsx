@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Switch, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Switch, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDevotionalStore } from '@/store/devotionalStore';
+import { useNotifications } from '@/hooks/useNotifications';
 import Colors from '@/constants/colors';
 import { Bell, Flame } from 'lucide-react-native';
 
@@ -13,8 +14,19 @@ if (Platform.OS !== 'web') {
 
 export default function SettingsScreen() {
   const { notificationTime, setNotificationTime, streak } = useDevotionalStore();
-  const [isEnabled, setIsEnabled] = useState(true);
+  const { 
+    notificationsEnabled, 
+    requestPermission, 
+    scheduleNotification, 
+    cancelNotification 
+  } = useNotifications();
+  
+  const [isEnabled, setIsEnabled] = useState(notificationsEnabled);
   const [showTimePicker, setShowTimePicker] = useState(false);
+
+  useEffect(() => {
+    setIsEnabled(notificationsEnabled);
+  }, [notificationsEnabled]);
 
   // Parse the HH:MM time string to Date object
   const getTimeAsDate = () => {
@@ -24,19 +36,47 @@ export default function SettingsScreen() {
     return date;
   };
 
-  const handleTimeChange = (event: any, selectedDate?: Date) => {
+  const handleTimeChange = async (event: any, selectedDate?: Date) => {
     if (Platform.OS !== 'web') {
       setShowTimePicker(Platform.OS === 'ios');
       if (selectedDate) {
         const hours = selectedDate.getHours().toString().padStart(2, '0');
         const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
-        setNotificationTime(`${hours}:${minutes}`);
+        const newTime = `${hours}:${minutes}`;
+        setNotificationTime(newTime);
+        
+        // Reschedule notification with new time
+        if (isEnabled) {
+          await cancelNotification();
+          await scheduleNotification(newTime);
+        }
       }
     }
   };
 
-  const toggleSwitch = () => {
-    setIsEnabled(previousState => !previousState);
+  const toggleSwitch = async () => {
+    if (!isEnabled) {
+      // Turning on notifications
+      const hasPermission = await requestPermission();
+      if (hasPermission) {
+        await scheduleNotification(notificationTime);
+        setIsEnabled(true);
+        Alert.alert(
+          'Notifications Enabled',
+          `You'll receive daily reminders at ${formatTimeForDisplay()}`
+        );
+      } else {
+        Alert.alert(
+          'Permission Required',
+          'Please enable notifications in your device settings to receive daily reminders.'
+        );
+      }
+    } else {
+      // Turning off notifications
+      await cancelNotification();
+      setIsEnabled(false);
+      Alert.alert('Notifications Disabled', 'Daily reminders have been turned off.');
+    }
   };
 
   const formatTimeForDisplay = () => {
@@ -44,12 +84,16 @@ export default function SettingsScreen() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const handleTimePress = () => {
+  const handleTimePress = async () => {
     if (Platform.OS === 'web') {
       // For web, show a simple input or alert
       const newTime = prompt('Enter time (HH:MM format):', notificationTime);
       if (newTime && /^\d{2}:\d{2}$/.test(newTime)) {
         setNotificationTime(newTime);
+        if (isEnabled) {
+          await cancelNotification();
+          await scheduleNotification(newTime);
+        }
       }
     } else {
       setShowTimePicker(true);
