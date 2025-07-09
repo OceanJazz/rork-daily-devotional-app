@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { Play, Pause, RotateCcw } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 
@@ -68,10 +68,11 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   timerText: {
-    fontSize: 48,
+    fontSize: Platform.OS === 'web' ? 36 : 48,
     fontWeight: 'bold',
     color: Colors.light.timer,
     marginBottom: 10,
+    fontFamily: Platform.OS === 'web' ? 'monospace' : undefined,
   },
   controls: {
     flexDirection: 'row',
@@ -82,5 +83,10 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 30,
     marginHorizontal: 10,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
   },
 });

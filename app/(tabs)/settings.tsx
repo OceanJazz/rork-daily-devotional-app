@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Switch, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useDevotionalStore } from '@/store/devotionalStore';
 import Colors from '@/constants/colors';
 import { Bell, Flame } from 'lucide-react-native';
+
+// Conditionally import DateTimePicker only for mobile
+let DateTimePicker: any = null;
+if (Platform.OS !== 'web') {
+  DateTimePicker = require('@react-native-community/datetimepicker').default;
+}
 
 export default function SettingsScreen() {
   const { notificationTime, setNotificationTime, streak } = useDevotionalStore();
@@ -20,11 +25,13 @@ export default function SettingsScreen() {
   };
 
   const handleTimeChange = (event: any, selectedDate?: Date) => {
-    setShowTimePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      const hours = selectedDate.getHours().toString().padStart(2, '0');
-      const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
-      setNotificationTime(`${hours}:${minutes}`);
+    if (Platform.OS !== 'web') {
+      setShowTimePicker(Platform.OS === 'ios');
+      if (selectedDate) {
+        const hours = selectedDate.getHours().toString().padStart(2, '0');
+        const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
+        setNotificationTime(`${hours}:${minutes}`);
+      }
     }
   };
 
@@ -35,6 +42,18 @@ export default function SettingsScreen() {
   const formatTimeForDisplay = () => {
     const date = getTimeAsDate();
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleTimePress = () => {
+    if (Platform.OS === 'web') {
+      // For web, show a simple input or alert
+      const newTime = prompt('Enter time (HH:MM format):', notificationTime);
+      if (newTime && /^\d{2}:\d{2}$/.test(newTime)) {
+        setNotificationTime(newTime);
+      }
+    } else {
+      setShowTimePicker(true);
+    }
   };
 
   return (
@@ -58,14 +77,14 @@ export default function SettingsScreen() {
         {isEnabled && (
           <TouchableOpacity 
             style={styles.timeSelector}
-            onPress={() => setShowTimePicker(true)}
+            onPress={handleTimePress}
           >
             <Text style={styles.timeLabel}>Notification Time</Text>
             <Text style={styles.timeValue}>{formatTimeForDisplay()}</Text>
           </TouchableOpacity>
         )}
         
-        {showTimePicker && (
+        {showTimePicker && DateTimePicker && Platform.OS !== 'web' && (
           <DateTimePicker
             value={getTimeAsDate()}
             mode="time"
@@ -172,6 +191,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: Colors.light.border,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      },
+    }),
   },
   timeLabel: {
     fontSize: 14,

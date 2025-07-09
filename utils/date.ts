@@ -14,15 +14,20 @@ export const parseLocalDate = (dateString: string): Date => {
   return new Date(year, month - 1, day); // JS months are 0-based
 };
 
-// UPDATED: Format a date string from the CSV for display
+// Format a date string from the CSV for display
 export const formatDisplayDate = (dateString: string): string => {
-  const date = parseLocalDate(dateString);
-  return date.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+  try {
+    const date = parseLocalDate(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (error) {
+    console.warn('Error formatting date:', dateString);
+    return dateString; // Fallback to original string
+  }
 };
 
 // Utility: Get today's date in YYYY-MM-DD format using local time
