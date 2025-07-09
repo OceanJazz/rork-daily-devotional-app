@@ -8,6 +8,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -64,6 +66,7 @@ export const useNotifications = () => {
           sound: true,
         },
         trigger: {
+          type: 'calendar',
           hour: hours,
           minute: minutes,
           repeats: true,
