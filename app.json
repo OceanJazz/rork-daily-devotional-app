@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Cultivate",
-    "slug": "daily-devotional-app",
+    "slug": "Cultivate-devotional",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.daily-devotional-app"
+      "bundleIdentifier": "Cultivate-devotional"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.daily-devotional-app"
+      "package": "Cutivate-devotional"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
