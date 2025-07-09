@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jasonbrown.cultivate"
+      "bundleIdentifier": "com.broadwayunitedmethodist.cultivate"
     },
     "android": {
       "adaptiveIcon": {
