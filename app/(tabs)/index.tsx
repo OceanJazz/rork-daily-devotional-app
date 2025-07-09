@@ -73,13 +73,14 @@ export default function TodayScreen() {
     } catch (err) {
       console.error('Error fetching devotionals:', err);
       
+      const error = err as Error;
       let errorMessage = 'Failed to load devotional.';
       
-      if (err.name === 'AbortError') {
+      if (error.name === 'AbortError') {
         errorMessage = 'Request timed out. Check your internet connection.';
-      } else if (err.message.includes('Failed to fetch')) {
+      } else if (error.message.includes('Failed to fetch')) {
         errorMessage = 'Network error. Please check your internet connection.';
-      } else if (err.message.includes('HTTP')) {
+      } else if (error.message.includes('HTTP')) {
         errorMessage = 'Server error. The devotional service may be temporarily unavailable.';
       }
       
