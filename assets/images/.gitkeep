@@ -1,6 +1,5 @@
-# This file ensures the assets/images directory is created
-# Place your app assets here:
-# - icon.png (1024x1024px)
-# - adaptive-icon.png (1024x1024px) 
-# - splash.png (1284x2778px)
-# - favicon.png (48x48px)
+# Upload your 4 required images here:
+# 1. icon.png (1024x1024px)
+# 2. adaptive-icon.png (1024x1024px) 
+# 3. splash.png (1284x2778px)
+# 4. favicon.png (48x48px)
