@@ -63,10 +63,12 @@ export const useNotifications = () => {
         content: {
           title: 'Time for Your Daily Devotional',
           body: 'Take a moment to reflect on today\'s scripture and journal your thoughts.',
-          sound: true,
+          sound: 'default',
+          priority: Notifications.AndroidNotificationPriority.HIGH,
+          vibrate: [0, 250, 250, 250],
         },
         trigger: {
-          type: 'calendar',
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
           hour: hours,
           minute: minutes,
           repeats: true,

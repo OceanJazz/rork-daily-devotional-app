@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DevotionalEntry, JournalEntry, StreakData } from '@/types/devotional';
-import { getTodayDate, hasJournaledToday, hasJournaledYesterday } from '@/utils/date';
+import { getTodayDate, hasJournaledToday, hasJournaledYesterday, getYesterdayDate } from '@/utils/date';
 
 interface DevotionalState {
   devotionals: DevotionalEntry[];
@@ -133,42 +133,60 @@ export const useDevotionalStore = create<DevotionalState>()(
       updateStreak: () => {
         const { streak, journalEntries } = get();
         const today = getTodayDate();
+        const yesterday = getYesterdayDate();
         
-        // Sort entries by date (newest first)
-        const sortedEntries = [...journalEntries].sort((a, b) => 
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
+        // Check if user has journaled today
+        const hasJournaledTodayBool = journalEntries.some(entry => entry.date === today);
         
-        // Get the most recent journal entry date
-        const lastJournaledDate = sortedEntries.length > 0 ? sortedEntries[0].date : null;
+        // Check if user journaled yesterday
+        const hasJournaledYesterdayBool = journalEntries.some(entry => entry.date === yesterday);
         
-        let { currentStreak, longestStreak } = streak;
+        let newCurrentStreak = streak.currentStreak;
+        let newLongestStreak = streak.longestStreak;
+        let newLastJournaledDate = streak.lastJournaledDate;
         
-        // Check if user journaled today
-        if (hasJournaledToday(lastJournaledDate)) {
-          // Already counted in streak, no change needed
-        } 
-        // Check if user journaled yesterday (maintain streak)
-        else if (hasJournaledYesterday(streak.lastJournaledDate)) {
-          currentStreak += 1;
-        } 
-        // No recent entries, reset streak
-        else if (lastJournaledDate !== streak.lastJournaledDate) {
-          currentStreak = 1; // Starting a new streak
+        if (hasJournaledTodayBool) {
+          // User journaled today
+          if (streak.lastJournaledDate !== today) {
+            // This is a new journal entry for today
+            if (hasJournaledYesterdayBool || streak.lastJournaledDate === yesterday) {
+              // Continue streak
+              newCurrentStreak = streak.currentStreak + 1;
+            } else {
+              // Start new streak
+              newCurrentStreak = 1;
+            }
+            newLastJournaledDate = today;
+          }
+        } else {
+          // User hasn't journaled today
+          // Check if streak should be broken (if it's past today and they haven't journaled)
+          if (streak.lastJournaledDate && streak.lastJournaledDate !== today && streak.lastJournaledDate !== yesterday) {
+            // Streak is broken
+            newCurrentStreak = 0;
+          }
         }
         
         // Update longest streak if current streak is longer
-        if (currentStreak > longestStreak) {
-          longestStreak = currentStreak;
+        if (newCurrentStreak > newLongestStreak) {
+          newLongestStreak = newCurrentStreak;
         }
         
-        set({
-          streak: {
-            currentStreak,
-            longestStreak,
-            lastJournaledDate: today
-          }
-        });
+        // Only update if something changed
+        if (newCurrentStreak !== streak.currentStreak || 
+            newLongestStreak !== streak.longestStreak || 
+            newLastJournaledDate !== streak.lastJournaledDate) {
+          
+          set({
+            streak: {
+              currentStreak: newCurrentStreak,
+              longestStreak: newLongestStreak,
+              lastJournaledDate: newLastJournaledDate
+            }
+          });
+          
+          console.log(`Streak updated: Current=${newCurrentStreak}, Longest=${newLongestStreak}, Last=${newLastJournaledDate}`);
+        }
       }
     }),
     {

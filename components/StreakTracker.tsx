@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useDevotionalStore } from '@/store/devotionalStore';
 import Colors from '@/constants/colors';
 import { Flame } from 'lucide-react-native';
 
 export default function StreakTracker() {
-  const { streak } = useDevotionalStore();
+  const { streak, updateStreak } = useDevotionalStore();
+  
+  // Update streak when component mounts to ensure it's current
+  useEffect(() => {
+    updateStreak();
+  }, [updateStreak]);
   
   return (
     <View style={styles.container}>

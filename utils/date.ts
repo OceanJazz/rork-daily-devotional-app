@@ -42,6 +42,18 @@ export const getTodayDate = (): string => {
   return formatDate(localDate);
 };
 
+// Utility: Get yesterday's date in YYYY-MM-DD format using local time
+export const getYesterdayDate = (): string => {
+  const now = new Date();
+  const yesterday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 1
+  );
+  
+  return formatDate(yesterday);
+};
+
 // Check if the user has journaled today
 export const hasJournaledToday = (lastJournaledDate: string | null): boolean => {
   if (!lastJournaledDate) return false;
@@ -52,9 +64,6 @@ export const hasJournaledToday = (lastJournaledDate: string | null): boolean => 
 export const hasJournaledYesterday = (lastJournaledDate: string | null): boolean => {
   if (!lastJournaledDate) return false;
   
-  const now = new Date();
-  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-  const yesterdayFormatted = formatDate(yesterday);
-  
-  return lastJournaledDate === yesterdayFormatted;
+  const yesterday = getYesterdayDate();
+  return lastJournaledDate === yesterday;
 };
