@@ -14,18 +14,24 @@
       }
     },
     "production": {
-      "autoIncrement": true,
+      "autoIncrement": false,
       "cache": {
         "disabled": false
+      },
+      "ios": {
+        "buildConfiguration": "Release"
+      },
+      "android": {
+        "buildType": "apk"
       }
     }
   },
   "submit": {
     "production": {
       "ios": {
-        "appleId": "your-apple-id@email.com",
-        "ascAppId": "your-app-store-connect-id",
-        "appleTeamId": "your-team-id"
+        "appleId": "cultivate@devotional.app",
+        "ascAppId": "placeholder",
+        "appleTeamId": "placeholder"
       }
     }
   }
