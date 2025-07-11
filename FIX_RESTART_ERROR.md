@@ -13,7 +13,7 @@ Since you mentioned "Broadway United Methodist Church", update your `app.json`:
     "slug": "cultivate-devotional",
     "version": "1.0.0",
     "ios": {
-      "bundleIdentifier": "com.broadwayumc.cultivate",
+      "bundleIdentifier": "com.broadwayunitedmethodist.cultivate",
       "buildNumber": "2"
     },
     "android": {
