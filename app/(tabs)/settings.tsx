@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Switch, Platform, Alert } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Switch, Platform, Alert, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDevotionalStore } from '@/store/devotionalStore';
 import { useNotifications } from '@/hooks/useNotifications';
@@ -37,20 +37,26 @@ export default function SettingsScreen() {
   };
 
   const handleTimeChange = async (event: any, selectedDate?: Date) => {
-    if (Platform.OS !== 'web') {
-      setShowTimePicker(Platform.OS === 'ios');
-      if (selectedDate) {
-        const hours = selectedDate.getHours().toString().padStart(2, '0');
-        const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
-        const newTime = `${hours}:${minutes}`;
-        setNotificationTime(newTime);
-        
-        // Reschedule notification with new time
-        if (isEnabled) {
-          await cancelNotification();
-          await scheduleNotification(newTime);
-        }
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+    }
+    
+    if (selectedDate) {
+      const hours = selectedDate.getHours().toString().padStart(2, '0');
+      const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
+      const newTime = `${hours}:${minutes}`;
+      setNotificationTime(newTime);
+      
+      // Reschedule notification with new time
+      if (isEnabled) {
+        await cancelNotification();
+        await scheduleNotification(newTime);
       }
+    }
+    
+    // For iOS, hide the picker after selection
+    if (Platform.OS === 'ios') {
+      setShowTimePicker(false);
     }
   };
 
@@ -81,22 +87,83 @@ export default function SettingsScreen() {
 
   const formatTimeForDisplay = () => {
     const date = getTimeAsDate();
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
   };
 
   const handleTimePress = async () => {
     if (Platform.OS === 'web') {
-      // For web, show a simple input or alert
-      const newTime = prompt('Enter time (HH:MM format):', notificationTime);
-      if (newTime && /^\d{2}:\d{2}$/.test(newTime)) {
-        setNotificationTime(newTime);
-        if (isEnabled) {
-          await cancelNotification();
-          await scheduleNotification(newTime);
+      // For web, show a simple input
+      const newTime = prompt('Enter time (HH:MM format, 24-hour):', notificationTime);
+      if (newTime && /^\d{1,2}:\d{2}$/.test(newTime)) {
+        const [hours, minutes] = newTime.split(':').map(Number);
+        if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+          const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+          setNotificationTime(formattedTime);
+          if (isEnabled) {
+            await cancelNotification();
+            await scheduleNotification(formattedTime);
+          }
         }
       }
     } else {
       setShowTimePicker(true);
+    }
+  };
+
+  const renderTimePicker = () => {
+    if (!DateTimePicker || Platform.OS === 'web') return null;
+
+    if (Platform.OS === 'ios') {
+      return (
+        <Modal
+          visible={showTimePicker}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <TouchableOpacity 
+                  onPress={() => setShowTimePicker(false)}
+                  style={styles.modalButton}
+                >
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <Text style={styles.modalTitle}>Set Reminder Time</Text>
+                <TouchableOpacity 
+                  onPress={() => setShowTimePicker(false)}
+                  style={styles.modalButton}
+                >
+                  <Text style={[styles.modalButtonText, styles.doneButton]}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={getTimeAsDate()}
+                mode="time"
+                is24Hour={false}
+                display="spinner"
+                onChange={handleTimeChange}
+                style={styles.timePicker}
+              />
+            </View>
+          </View>
+        </Modal>
+      );
+    } else {
+      // Android - shows native picker
+      return showTimePicker ? (
+        <DateTimePicker
+          value={getTimeAsDate()}
+          mode="time"
+          is24Hour={false}
+          display="default"
+          onChange={handleTimeChange}
+        />
+      ) : null;
     }
   };
 
@@ -127,16 +194,6 @@ export default function SettingsScreen() {
             <Text style={styles.timeValue}>{formatTimeForDisplay()}</Text>
           </TouchableOpacity>
         )}
-        
-        {showTimePicker && DateTimePicker && Platform.OS !== 'web' && (
-          <DateTimePicker
-            value={getTimeAsDate()}
-            mode="time"
-            is24Hour={false}
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={handleTimeChange}
-          />
-        )}
       </View>
       
       <View style={styles.section}>
@@ -166,6 +223,8 @@ export default function SettingsScreen() {
           Cultivate provides daily scripture readings and reflection prompts to help you grow in your faith journey.
         </Text>
       </View>
+
+      {renderTimePicker()}
     </SafeAreaView>
   );
 }
@@ -261,5 +320,45 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     opacity: 0.8,
     lineHeight: 20,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: Colors.light.background,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 34, // Safe area padding for iOS
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
+  modalButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    color: Colors.light.primary,
+  },
+  doneButton: {
+    fontWeight: '600',
+  },
+  timePicker: {
+    height: 200,
+    backgroundColor: Colors.light.background,
   },
 });
