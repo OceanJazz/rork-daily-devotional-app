@@ -37,6 +37,7 @@ export default function SettingsScreen() {
   };
 
   const handleTimeChange = async (event: any, selectedDate?: Date) => {
+    // For Android, hide picker immediately
     if (Platform.OS === 'android') {
       setShowTimePicker(false);
     }
@@ -53,11 +54,10 @@ export default function SettingsScreen() {
         await scheduleNotification(newTime);
       }
     }
-    
-    // For iOS, hide the picker after selection
-    if (Platform.OS === 'ios') {
-      setShowTimePicker(false);
-    }
+  };
+
+  const handleTimePickerDone = () => {
+    setShowTimePicker(false);
   };
 
   const toggleSwitch = async () => {
@@ -123,6 +123,7 @@ export default function SettingsScreen() {
           visible={showTimePicker}
           transparent={true}
           animationType="slide"
+          onRequestClose={() => setShowTimePicker(false)}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
@@ -135,20 +136,23 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
                 <Text style={styles.modalTitle}>Set Reminder Time</Text>
                 <TouchableOpacity 
-                  onPress={() => setShowTimePicker(false)}
+                  onPress={handleTimePickerDone}
                   style={styles.modalButton}
                 >
                   <Text style={[styles.modalButtonText, styles.doneButton]}>Done</Text>
                 </TouchableOpacity>
               </View>
-              <DateTimePicker
-                value={getTimeAsDate()}
-                mode="time"
-                is24Hour={false}
-                display="spinner"
-                onChange={handleTimeChange}
-                style={styles.timePicker}
-              />
+              <View style={styles.pickerContainer}>
+                <DateTimePicker
+                  value={getTimeAsDate()}
+                  mode="time"
+                  is24Hour={false}
+                  display="spinner"
+                  onChange={handleTimeChange}
+                  style={styles.timePicker}
+                  textColor={Colors.light.text}
+                />
+              </View>
             </View>
           </View>
         </Modal>
@@ -189,6 +193,7 @@ export default function SettingsScreen() {
           <TouchableOpacity 
             style={styles.timeSelector}
             onPress={handleTimePress}
+            activeOpacity={0.7}
           >
             <Text style={styles.timeLabel}>Notification Time</Text>
             <Text style={styles.timeValue}>{formatTimeForDisplay()}</Text>
@@ -288,7 +293,7 @@ const styles = StyleSheet.create({
   },
   timeSelector: {
     marginTop: 16,
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     backgroundColor: Colors.light.background,
     borderRadius: 8,
@@ -306,9 +311,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   timeValue: {
-    fontSize: 16,
+    fontSize: 18,
     color: Colors.light.text,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   aboutText: {
     fontSize: 16,
@@ -330,7 +335,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingBottom: 34, // Safe area padding for iOS
+    maxHeight: '50%',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -357,8 +362,12 @@ const styles = StyleSheet.create({
   doneButton: {
     fontWeight: '600',
   },
+  pickerContainer: {
+    paddingVertical: 20,
+    paddingBottom: 34, // Safe area padding for iOS
+  },
   timePicker: {
     height: 200,
-    backgroundColor: Colors.light.background,
+    backgroundColor: 'transparent',
   },
 });
