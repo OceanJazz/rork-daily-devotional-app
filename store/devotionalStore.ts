@@ -13,6 +13,8 @@ interface DevotionalState {
   isLoading: boolean;
   error: string | null;
   streak: StreakData;
+  isFirstTime: boolean;
+  hasUserCreatedContent: boolean;
   setDevotionals: (devotionals: DevotionalEntry[]) => void;
   setCurrentDevotional: (devotional: DevotionalEntry | null) => void;
   addJournalEntry: (response: string) => void;
@@ -22,6 +24,9 @@ interface DevotionalState {
   setError: (error: string | null) => void;
   getJournalEntryForDate: (date: string) => JournalEntry | undefined;
   updateStreak: () => void;
+  initializeFirstTimeData: () => void;
+  cleanupSampleData: () => void;
+  resetToFirstTime: () => void;
 }
 
 export const useDevotionalStore = create<DevotionalState>()(
@@ -34,6 +39,8 @@ export const useDevotionalStore = create<DevotionalState>()(
       notificationTime: '08:00',
       isLoading: false,
       error: null,
+      isFirstTime: true,
+      hasUserCreatedContent: false,
       streak: {
         currentStreak: 0,
         longestStreak: 0,
@@ -45,11 +52,17 @@ export const useDevotionalStore = create<DevotionalState>()(
       setCurrentDevotional: (devotional) => set({ currentDevotional: devotional }),
       
       addJournalEntry: (response) => {
-        const { currentDevotional, journalEntries } = get();
+        const { currentDevotional, journalEntries, hasUserCreatedContent } = get();
         if (!currentDevotional) return;
         
         const today = getTodayDate();
         const existingEntryIndex = journalEntries.findIndex(entry => entry.date === today);
+        
+        // Mark that user has created content and cleanup sample data if needed
+        if (!hasUserCreatedContent) {
+          get().cleanupSampleData();
+          set({ hasUserCreatedContent: true });
+        }
         
         if (existingEntryIndex >= 0) {
           // Update existing entry
@@ -135,11 +148,14 @@ export const useDevotionalStore = create<DevotionalState>()(
         const today = getTodayDate();
         const yesterday = getYesterdayDate();
         
+        // Filter out sample entries when calculating streak
+        const userJournalEntries = journalEntries.filter(entry => !entry.isSample);
+        
         // Check if user has journaled today
-        const hasJournaledTodayBool = journalEntries.some(entry => entry.date === today);
+        const hasJournaledTodayBool = userJournalEntries.some(entry => entry.date === today);
         
         // Check if user journaled yesterday
-        const hasJournaledYesterdayBool = journalEntries.some(entry => entry.date === yesterday);
+        const hasJournaledYesterdayBool = userJournalEntries.some(entry => entry.date === yesterday);
         
         let newCurrentStreak = streak.currentStreak;
         let newLongestStreak = streak.longestStreak;
@@ -187,6 +203,104 @@ export const useDevotionalStore = create<DevotionalState>()(
           
           console.log(`Streak updated: Current=${newCurrentStreak}, Longest=${newLongestStreak}, Last=${newLastJournaledDate}`);
         }
+      },
+      
+      initializeFirstTimeData: () => {
+        const { isFirstTime } = get();
+        if (!isFirstTime) return;
+        
+        console.log('Initializing first-time sample data');
+        
+        // Create sample journal entries for the past few days to show app functionality
+        const sampleJournalEntries: JournalEntry[] = [
+          {
+            date: getYesterdayDate(),
+            response: "I've been struggling with trusting God in my career decisions lately. This verse reminds me that I don't have to figure everything out on my own. I want to surrender my plans to Him and trust that He will guide my path.",
+            devotional: {
+              date: getYesterdayDate(),
+              scriptureText: "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+              scriptureReference: "Proverbs 3:5-6",
+              questionPrompt: "In what area of your life do you find it most difficult to trust God? What would it look like to fully surrender that area to Him today?"
+            },
+            isSample: true
+          },
+          {
+            date: (() => {
+              const date = new Date();
+              date.setDate(date.getDate() - 2);
+              return date.toISOString().split('T')[0];
+            })(),
+            response: "God's love has completely transformed how I see myself and others. Recently, when I was feeling discouraged about my mistakes, I remembered that His love isn't based on my performance. This gives me hope and helps me extend grace to others too.",
+            devotional: {
+              date: (() => {
+                const date = new Date();
+                date.setDate(date.getDate() - 2);
+                return date.toISOString().split('T')[0];
+              })(),
+              scriptureText: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
+              scriptureReference: "John 3:16",
+              questionPrompt: "How has God's love transformed your life? Share a specific example of how you've experienced His love recently."
+            },
+            isSample: true
+          }
+        ];
+        
+        // Add sample favorite verse
+        const sampleFavorite: DevotionalEntry = {
+          date: getYesterdayDate(),
+          scriptureText: "Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+          scriptureReference: "Proverbs 3:5-6",
+          questionPrompt: "In what area of your life do you find it most difficult to trust God? What would it look like to fully surrender that area to Him today?",
+          isFavorite: true,
+          isSample: true
+        };
+        
+        set({
+          journalEntries: sampleJournalEntries,
+          favoriteVerses: [sampleFavorite],
+          streak: {
+            currentStreak: 2,
+            longestStreak: 2,
+            lastJournaledDate: getYesterdayDate()
+          },
+          isFirstTime: false
+        });
+      },
+      
+      cleanupSampleData: () => {
+        const { journalEntries, favoriteVerses } = get();
+        
+        console.log('Cleaning up sample data as user has created their own content');
+        
+        // Remove all sample entries
+        const userJournalEntries = journalEntries.filter(entry => !entry.isSample);
+        const userFavoriteVerses = favoriteVerses.filter(verse => !verse.isSample);
+        
+        set({
+          journalEntries: userJournalEntries,
+          favoriteVerses: userFavoriteVerses,
+          // Reset streak to start fresh with user's actual entries
+          streak: {
+            currentStreak: 0,
+            longestStreak: 0,
+            lastJournaledDate: null
+          }
+        });
+      },
+      
+      resetToFirstTime: () => {
+        console.log('Resetting app to first-time state for testing');
+        set({
+          journalEntries: [],
+          favoriteVerses: [],
+          isFirstTime: true,
+          hasUserCreatedContent: false,
+          streak: {
+            currentStreak: 0,
+            longestStreak: 0,
+            lastJournaledDate: null
+          }
+        });
       }
     }),
     {
@@ -196,7 +310,9 @@ export const useDevotionalStore = create<DevotionalState>()(
         journalEntries: state.journalEntries,
         notificationTime: state.notificationTime,
         favoriteVerses: state.favoriteVerses,
-        streak: state.streak
+        streak: state.streak,
+        isFirstTime: state.isFirstTime,
+        hasUserCreatedContent: state.hasUserCreatedContent
       })
     }
   )

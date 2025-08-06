@@ -4,12 +4,14 @@ export interface DevotionalEntry {
   scriptureReference: string;
   questionPrompt: string;
   isFavorite?: boolean;
+  isSample?: boolean;
 }
 
 export interface JournalEntry {
   date: string;
   response: string;
   devotional: DevotionalEntry;
+  isSample?: boolean;
 }
 
 export interface StreakData {

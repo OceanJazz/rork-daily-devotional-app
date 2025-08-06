@@ -7,7 +7,7 @@ import Colors from '@/constants/colors';
 import FavoriteVerseCard from '@/components/FavoriteVerseCard';
 
 export default function FavoritesScreen() {
-  const { favoriteVerses } = useDevotionalStore();
+  const { favoriteVerses, hasUserCreatedContent } = useDevotionalStore();
   
   // Sort favorites by date (newest first)
   const sortedFavorites = [...favoriteVerses].sort((a, b) => 
@@ -17,7 +17,10 @@ export default function FavoritesScreen() {
   if (sortedFavorites.length === 0) {
     return (
       <SafeAreaView style={styles.container} edges={['bottom']}>
-        <EmptyState message="You haven't saved any favorite verses yet. Tap the heart icon on a verse to add it to your favorites." />
+        <EmptyState 
+          message="You haven't saved any favorite verses yet. Tap the heart icon on a verse to add it to your favorites." 
+          showWelcome={!hasUserCreatedContent}
+        />
       </SafeAreaView>
     );
   }

@@ -20,7 +20,14 @@ export default function JournalCard({ entry }: JournalCardProps) {
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
       <View style={styles.content}>
-        <Text style={styles.date}>{formatDisplayDate(entry.date)}</Text>
+        <View style={styles.dateRow}>
+          <Text style={styles.date}>{formatDisplayDate(entry.date)}</Text>
+          {entry.isSample && (
+            <View style={styles.sampleBadge}>
+              <Text style={styles.sampleText}>Sample</Text>
+            </View>
+          )}
+        </View>
         <Text style={styles.reference}>{entry.devotional.scriptureReference}</Text>
         <Text style={styles.preview} numberOfLines={2}>
           {entry.response}
@@ -49,10 +56,26 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   date: {
     fontSize: 14,
     color: Colors.light.accent,
-    marginBottom: 4,
+  },
+  sampleBadge: {
+    backgroundColor: Colors.light.accent,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  sampleText: {
+    fontSize: 10,
+    color: Colors.light.card,
+    fontWeight: '500',
   },
   reference: {
     fontSize: 16,

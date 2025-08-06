@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, ScrollView, ActivityIndicator, RefreshControl, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDevotionalStore } from '@/store/devotionalStore';
@@ -21,12 +21,14 @@ export default function TodayScreen() {
     setLoading,
     isLoading,
     error,
-    setError
+    setError,
+    isFirstTime,
+    initializeFirstTimeData
   } = useDevotionalStore();
   const [refreshing, setRefreshing] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
-  const fetchDevotionals = async () => {
+  const fetchDevotionals = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -102,14 +104,21 @@ export default function TodayScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [retryCount, devotionals.length, setLoading, setError, setDevotionals, setCurrentDevotional]);
 
+  useEffect(() => {
+    // Initialize first-time data if this is the first app launch
+    if (isFirstTime) {
+      initializeFirstTimeData();
+    }
+  }, [isFirstTime, initializeFirstTimeData]);
+  
   useEffect(() => {
     // Only fetch if we don't have devotionals or current devotional
     if (devotionals.length === 0 || !currentDevotional) {
       fetchDevotionals();
     }
-  }, []);
+  }, [devotionals.length, currentDevotional, fetchDevotionals]);
 
   const onRefresh = () => {
     setRefreshing(true);

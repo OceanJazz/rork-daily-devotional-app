@@ -20,7 +20,14 @@ export default function FavoriteVerseCard({ devotional }: FavoriteVerseCardProps
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.date}>{formatDisplayDate(devotional.date)}</Text>
+        <View style={styles.dateRow}>
+          <Text style={styles.date}>{formatDisplayDate(devotional.date)}</Text>
+          {devotional.isSample && (
+            <View style={styles.sampleBadge}>
+              <Text style={styles.sampleText}>Sample</Text>
+            </View>
+          )}
+        </View>
         <TouchableOpacity onPress={handleToggleFavorite} style={styles.favoriteButton}>
           <Heart 
             size={20} 
@@ -54,9 +61,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   date: {
     fontSize: 14,
     color: Colors.light.accent,
+  },
+  sampleBadge: {
+    backgroundColor: Colors.light.accent,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  sampleText: {
+    fontSize: 10,
+    color: Colors.light.card,
+    fontWeight: '500',
   },
   favoriteButton: {
     padding: 4,

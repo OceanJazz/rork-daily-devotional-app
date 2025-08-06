@@ -7,7 +7,7 @@ import EmptyState from '@/components/EmptyState';
 import Colors from '@/constants/colors';
 
 export default function JournalScreen() {
-  const { journalEntries } = useDevotionalStore();
+  const { journalEntries, hasUserCreatedContent } = useDevotionalStore();
   
   // Sort entries by date (newest first)
   const sortedEntries = [...journalEntries].sort((a, b) => 
@@ -17,7 +17,10 @@ export default function JournalScreen() {
   if (sortedEntries.length === 0) {
     return (
       <SafeAreaView style={styles.container} edges={['bottom']}>
-        <EmptyState message="Your journal is empty. Start reflecting on today's devotional to see entries here." />
+        <EmptyState 
+          message="Your journal is empty. Start reflecting on today's devotional to see entries here." 
+          showWelcome={!hasUserCreatedContent}
+        />
       </SafeAreaView>
     );
   }
