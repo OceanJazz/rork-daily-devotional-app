@@ -10,7 +10,7 @@ interface TimerProps {
 export default function Timer({ initialMinutes = 5 }: TimerProps) {
   const [seconds, setSeconds] = useState(initialMinutes * 60);
   const [isActive, setIsActive] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | number | null>(null);
 
   useEffect(() => {
     if (isActive && seconds > 0) {
