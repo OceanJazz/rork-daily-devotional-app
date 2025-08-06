@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDevotionalStore } from '@/store/devotionalStore';
 import JournalCard from '@/components/JournalCard';
 import EmptyState from '@/components/EmptyState';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 
 export default function JournalScreen() {
   const { journalEntries, hasUserCreatedContent } = useDevotionalStore();
@@ -46,13 +46,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
   },
   listContent: {
-    paddingVertical: 16,
+    paddingVertical: responsive.spacing.md,
+    paddingHorizontal: responsive.horizontalPadding,
+    maxWidth: responsive.maxContentWidth,
+    alignSelf: 'center',
+    width: '100%',
   },
   header: {
-    fontSize: 18,
+    fontSize: responsive.fontSize.large,
     fontWeight: 'bold',
     color: Colors.light.text,
-    marginHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: responsive.spacing.md,
   },
 });

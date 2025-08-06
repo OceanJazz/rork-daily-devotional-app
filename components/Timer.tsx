@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { Play, Pause, RotateCcw } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 
 interface TimerProps {
   initialMinutes?: number;
@@ -65,13 +65,13 @@ export default function Timer({ initialMinutes = 5 }: TimerProps) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: responsive.spacing.lg,
   },
   timerText: {
-    fontSize: Platform.OS === 'web' ? 36 : 48,
+    fontSize: Platform.OS === 'web' ? responsive.fontSize.timer * 0.75 : responsive.fontSize.timer,
     fontWeight: 'bold',
     color: Colors.light.timer,
-    marginBottom: 10,
+    marginBottom: responsive.spacing.sm,
     fontFamily: Platform.OS === 'web' ? 'monospace' : undefined,
   },
   controls: {
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.light.border,
-    padding: 12,
+    padding: responsive.spacing.md,
     borderRadius: 30,
-    marginHorizontal: 10,
+    marginHorizontal: responsive.spacing.sm,
     ...Platform.select({
       web: {
         cursor: 'pointer',

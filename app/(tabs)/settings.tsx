@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Switch, Platform, Alert, Moda
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDevotionalStore } from '@/store/devotionalStore';
 import { useNotifications } from '@/hooks/useNotifications';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 import { Bell, Flame } from 'lucide-react-native';
 
 // Conditionally import DateTimePicker only for mobile
@@ -238,13 +238,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
-    padding: 16,
+    padding: responsive.horizontalPadding,
+    maxWidth: responsive.maxContentWidth,
+    alignSelf: 'center',
+    width: '100%',
   },
   section: {
-    marginBottom: 24,
+    marginBottom: responsive.spacing.xl,
     backgroundColor: Colors.light.card,
     borderRadius: 12,
-    padding: 16,
+    padding: responsive.spacing.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -252,16 +255,16 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: responsive.fontSize.large,
     fontWeight: 'bold',
     color: Colors.light.text,
-    marginBottom: 16,
+    marginBottom: responsive.spacing.md,
   },
   settingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: responsive.spacing.sm,
   },
   settingInfo: {
     flexDirection: 'row',
@@ -271,7 +274,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: responsive.spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.border,
   },
@@ -280,21 +283,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   streakValue: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     fontWeight: '600',
     color: Colors.light.text,
   },
   icon: {
-    marginRight: 12,
+    marginRight: responsive.spacing.md,
   },
   settingText: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.text,
   },
   timeSelector: {
-    marginTop: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    marginTop: responsive.spacing.md,
+    paddingVertical: responsive.spacing.md,
+    paddingHorizontal: responsive.spacing.md,
     backgroundColor: Colors.light.background,
     borderRadius: 8,
     borderWidth: 1,
@@ -306,25 +309,25 @@ const styles = StyleSheet.create({
     }),
   },
   timeLabel: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.placeholder,
-    marginBottom: 4,
+    marginBottom: responsive.spacing.xs,
   },
   timeValue: {
-    fontSize: 18,
+    fontSize: responsive.fontSize.large,
     color: Colors.light.text,
     fontWeight: '600',
   },
   aboutText: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.text,
-    marginBottom: 8,
+    marginBottom: responsive.spacing.sm,
   },
   aboutDescription: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.text,
     opacity: 0.8,
-    lineHeight: 20,
+    lineHeight: responsive.fontSize.small * 1.4,
   },
   modalOverlay: {
     flex: 1,
@@ -341,29 +344,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: responsive.spacing.lg,
+    paddingVertical: responsive.spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.border,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: responsive.fontSize.large,
     fontWeight: '600',
     color: Colors.light.text,
   },
   modalButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: responsive.spacing.sm,
+    paddingHorizontal: responsive.spacing.md,
   },
   modalButtonText: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.primary,
   },
   doneButton: {
     fontWeight: '600',
   },
   pickerContainer: {
-    paddingVertical: 20,
+    paddingVertical: responsive.spacing.lg,
     paddingBottom: 34, // Safe area padding for iOS
   },
   timePicker: {

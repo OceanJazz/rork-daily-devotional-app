@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { JournalEntry } from '@/types/devotional';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 import { formatDisplayDate } from '@/utils/date';
 import { ChevronRight } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
@@ -42,9 +42,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.light.card,
     borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginVertical: 8,
+    padding: responsive.spacing.md,
+    marginVertical: responsive.spacing.sm,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -59,18 +58,18 @@ const styles = StyleSheet.create({
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: responsive.spacing.xs,
   },
   date: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.accent,
   },
   sampleBadge: {
     backgroundColor: Colors.light.accent,
-    paddingHorizontal: 6,
+    paddingHorizontal: responsive.spacing.xs,
     paddingVertical: 2,
     borderRadius: 4,
-    marginLeft: 8,
+    marginLeft: responsive.spacing.sm,
   },
   sampleText: {
     fontSize: 10,
@@ -78,13 +77,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   reference: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     fontWeight: '600',
     color: Colors.light.primary,
-    marginBottom: 8,
+    marginBottom: responsive.spacing.sm,
   },
   preview: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.text,
     opacity: 0.8,
   },

@@ -10,7 +10,7 @@ import Timer from '@/components/Timer';
 import JournalEntry from '@/components/JournalEntry';
 import EmptyState from '@/components/EmptyState';
 import StreakTracker from '@/components/StreakTracker';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 
 export default function TodayScreen() {
   const { 
@@ -179,28 +179,31 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
   },
   loadingText: {
-    marginTop: 12,
-    fontSize: 16,
+    marginTop: responsive.spacing.md,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.text,
   },
   scrollView: {
     flex: 1,
   },
   contentContainer: {
-    paddingVertical: 20,
-    paddingBottom: 40,
+    paddingVertical: responsive.verticalPadding,
+    paddingBottom: responsive.spacing.xl,
+    paddingHorizontal: responsive.horizontalPadding,
+    maxWidth: responsive.maxContentWidth,
+    alignSelf: 'center',
+    width: '100%',
   },
   errorContainer: {
     backgroundColor: '#FFF0F0',
     borderRadius: 8,
-    padding: 12,
-    marginHorizontal: 16,
-    marginBottom: 16,
+    padding: responsive.spacing.md,
+    marginBottom: responsive.spacing.md,
     borderLeftWidth: 4,
     borderLeftColor: Colors.light.timer,
   },
   errorText: {
     color: Colors.light.text,
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
   },
 });

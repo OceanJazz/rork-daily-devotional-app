@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useDevotionalStore } from '@/store/devotionalStore';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 import { Flame } from 'lucide-react-native';
 
 export default function StreakTracker() {
@@ -35,10 +35,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: Colors.light.card,
     borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 20,
-    marginBottom: 10,
+    padding: responsive.spacing.md,
+    marginTop: responsive.spacing.lg,
+    marginBottom: responsive.spacing.sm,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -52,33 +51,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginRight: 12,
+    marginRight: responsive.spacing.md,
   },
   streakCount: {
-    fontSize: 24,
+    fontSize: responsive.fontSize.xlarge,
     fontWeight: 'bold',
     color: Colors.light.text,
   },
   streakLabel: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.placeholder,
   },
   divider: {
     width: 1,
     height: '80%',
     backgroundColor: Colors.light.border,
-    marginHorizontal: 16,
+    marginHorizontal: responsive.spacing.md,
   },
   bestStreakBox: {
     flex: 1,
     alignItems: 'center',
   },
   bestStreakLabel: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.placeholder,
   },
   bestStreakCount: {
-    fontSize: 20,
+    fontSize: responsive.fontSize.large,
     fontWeight: 'bold',
     color: Colors.light.text,
   },

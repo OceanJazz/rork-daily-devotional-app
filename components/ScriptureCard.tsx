@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DevotionalEntry } from '@/types/devotional';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 import { formatDisplayDate } from '@/utils/date';
 import { Heart } from 'lucide-react-native';
 import { useDevotionalStore } from '@/store/devotionalStore';
@@ -40,7 +40,7 @@ export default function ScriptureCard({ devotional }: ScriptureCardProps) {
         <Text style={styles.reference}>{devotional.scriptureReference}</Text>
       </View>
       <View style={styles.promptContainer}>
-        <Text style={styles.promptTitle}>Today's Reflection</Text>
+        <Text style={styles.promptTitle}>Today&apos;s Reflection</Text>
         <Text style={styles.promptText}>{devotional.questionPrompt}</Text>
       </View>
     </View>
@@ -51,9 +51,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.light.card,
     borderRadius: 12,
-    padding: 20,
-    marginHorizontal: 16,
-    marginVertical: 10,
+    padding: responsive.cardPadding,
+    marginVertical: responsive.spacing.sm,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -64,27 +63,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: responsive.spacing.md,
   },
   date: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.accent,
   },
   favoriteButton: {
-    padding: 4,
+    padding: responsive.spacing.xs,
   },
   scriptureContainer: {
-    marginBottom: 20,
+    marginBottom: responsive.spacing.lg,
   },
   scriptureText: {
-    fontSize: 18,
-    lineHeight: 26,
+    fontSize: responsive.fontSize.large,
+    lineHeight: responsive.fontSize.large * 1.4,
     color: Colors.light.text,
-    marginBottom: 10,
+    marginBottom: responsive.spacing.sm,
     fontStyle: 'italic',
   },
   reference: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.primary,
     fontWeight: '600',
     textAlign: 'right',
@@ -92,17 +91,17 @@ const styles = StyleSheet.create({
   promptContainer: {
     borderTopWidth: 1,
     borderTopColor: Colors.light.border,
-    paddingTop: 16,
+    paddingTop: responsive.spacing.md,
   },
   promptTitle: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     fontWeight: 'bold',
     color: Colors.light.text,
-    marginBottom: 8,
+    marginBottom: responsive.spacing.sm,
   },
   promptText: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: responsive.fontSize.medium,
+    lineHeight: responsive.fontSize.medium * 1.5,
     color: Colors.light.text,
   },
 });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useDevotionalStore } from '@/store/devotionalStore';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 import { getTodayDate } from '@/utils/date';
 import { Save } from 'lucide-react-native';
 
@@ -43,21 +43,20 @@ export default function JournalEntry() {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
-    marginVertical: 10,
+    marginVertical: responsive.spacing.sm,
   },
   title: {
-    fontSize: 18,
+    fontSize: responsive.fontSize.large,
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 10,
+    marginBottom: responsive.spacing.sm,
   },
   input: {
     backgroundColor: Colors.light.card,
     borderRadius: 8,
-    padding: 16,
+    padding: responsive.spacing.md,
     minHeight: 150,
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.text,
     borderWidth: 1,
     borderColor: Colors.light.border,
@@ -65,16 +64,17 @@ const styles = StyleSheet.create({
   saveButton: {
     backgroundColor: Colors.light.primary,
     borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingVertical: responsive.spacing.md,
+    paddingHorizontal: responsive.spacing.lg,
     alignSelf: 'flex-end',
-    marginTop: 12,
+    marginTop: responsive.spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
   },
   saveButtonText: {
     color: '#FFF',
     fontWeight: '600',
-    marginLeft: 8,
+    marginLeft: responsive.spacing.sm,
+    fontSize: responsive.fontSize.medium,
   },
 });

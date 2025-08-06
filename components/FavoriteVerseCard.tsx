@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DevotionalEntry } from '@/types/devotional';
-import Colors from '@/constants/colors';
+import Colors, { responsive } from '@/constants/colors';
 import { formatDisplayDate } from '@/utils/date';
 import { Heart } from 'lucide-react-native';
 import { useDevotionalStore } from '@/store/devotionalStore';
@@ -46,9 +46,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.light.card,
     borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
+    padding: responsive.spacing.md,
+    marginBottom: responsive.spacing.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -59,22 +58,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: responsive.spacing.md,
   },
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   date: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.small,
     color: Colors.light.accent,
   },
   sampleBadge: {
     backgroundColor: Colors.light.accent,
-    paddingHorizontal: 6,
+    paddingHorizontal: responsive.spacing.xs,
     paddingVertical: 2,
     borderRadius: 4,
-    marginLeft: 8,
+    marginLeft: responsive.spacing.sm,
   },
   sampleText: {
     fontSize: 10,
@@ -82,17 +81,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   favoriteButton: {
-    padding: 4,
+    padding: responsive.spacing.xs,
   },
   scriptureText: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: responsive.fontSize.medium,
+    lineHeight: responsive.fontSize.medium * 1.5,
     color: Colors.light.text,
-    marginBottom: 10,
+    marginBottom: responsive.spacing.sm,
     fontStyle: 'italic',
   },
   reference: {
-    fontSize: 16,
+    fontSize: responsive.fontSize.medium,
     color: Colors.light.primary,
     fontWeight: '600',
     textAlign: 'right',
