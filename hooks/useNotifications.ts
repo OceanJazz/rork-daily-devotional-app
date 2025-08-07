@@ -65,7 +65,6 @@ export const useNotifications = () => {
           body: 'Take a moment to reflect on today\'s scripture and journal your thoughts.',
           sound: 'default',
           priority: Notifications.AndroidNotificationPriority.HIGH,
-          vibrate: [0, 250, 250, 250],
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.CALENDAR,

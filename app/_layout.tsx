@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -35,7 +36,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <ErrorBoundary>
+      <RootLayoutNav />
+    </ErrorBoundary>
+  );
 }
 
 function RootLayoutNav() {
